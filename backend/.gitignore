@@ -1,0 +1,95 @@
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Dependency directories
+node_modules/
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Output of 'npm pack'
+*.tgz
+
+# Uploads and media files
+uploads/
+media/
+static/uploads/
+
+# Database files
+*.sqlite
+*.sqlite3
+*.db
+*.dump
+
+# Temporary files
+tmp/
+temp/
+
+# Puppeteer
+.puppeteer/
+
+# Browser downloads from scraping
+downloads/
+screenshots/
+videos/
+
+# PM2 files
+.pm2/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build files
+build/
+dist/
+
+# Cache directories
+.cache/
+
+# Backup files
+*.backup
+*.bak
+
+# MongoDB dumps
+*.dump
+
+# Redis dumps
+dump.rdb
+
+# Certificate files
+*.pem
+*.key
+*.crt
+
+# Local config files
+config/local.js
+config/production.js
