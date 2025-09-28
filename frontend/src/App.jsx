@@ -51,19 +51,17 @@ function App() {
       clearTimeout(progressTimer);
 
       if (scrapeResponse.success) {
-        console.log('🎯 Scrape response data:', scrapeResponse.data);
+        
         
         // Backend returns data in results format: { profile, posts, reels, errors }
         const profile = scrapeResponse.data.profile;
         const scrapedPosts = scrapeResponse.data.posts || [];
         const scrapedReels = scrapeResponse.data.reels || [];
         
-        console.log('📝 Setting profile data:', profile);
-        console.log('📝 Setting posts data:', scrapedPosts);
-        console.log('📝 Setting reels data:', scrapedReels);
+        
         
         setCurrentInfluencer(profile);
-        console.log('🎯 Current influencer set to:', profile);
+        
         setPosts(scrapedPosts);
         setReels(scrapedReels);
         setAnalytics(null); // Will be calculated in ProfileHeader from posts/reels
@@ -124,9 +122,7 @@ function App() {
 
   const isLoading = Object.values(loading).some(Boolean);
 
-  console.log('🔍 Render check - currentInfluencer:', currentInfluencer);
-  console.log('🔍 Render check - posts length:', posts.length);
-  console.log('🔍 Render check - reels length:', reels.length);
+  
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">

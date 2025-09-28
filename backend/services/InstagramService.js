@@ -8,7 +8,7 @@ class InstagramService {
 
     async initialize() {
         try {
-            console.log('🚀 Initializing Puppeteer browser...');
+            
             
             this.browser = await puppeteer.launch({
                 headless: false,
@@ -18,7 +18,7 @@ class InstagramService {
             this.page = await this.browser.newPage();
             await this.page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36');
             
-            console.log('✅ Puppeteer browser initialized successfully');
+            
         } catch (error) {
             console.error('❌ Failed to initialize Puppeteer:', error.message);
             throw error;
@@ -33,7 +33,7 @@ class InstagramService {
             }
             await this.initialize();
 
-            console.log(`🌐 Navigating to: https://www.instagram.com/${username}/`);
+            
             
             await this.page.goto(`https://www.instagram.com/${username}/`, {
                 waitUntil: 'domcontentloaded',
@@ -85,7 +85,7 @@ class InstagramService {
                 };
             }, username);
 
-            console.log('📊 Profile data extracted:', profileData);
+            
             return profileData;
 
         } catch (error) {
@@ -96,7 +96,7 @@ class InstagramService {
 
     async getPosts(username, limit = 12) {
         try {
-            console.log(`📝 Posts scraping for: ${username}`);
+            
             
             if (!this.page) {
                 await this.initialize();
@@ -141,7 +141,7 @@ class InstagramService {
                 return posts;
             }, limit);
 
-            console.log(`✅ Scraped ${postsData.length} posts for: ${username}`);
+            
             return postsData;
 
         } catch (error) {
@@ -152,7 +152,7 @@ class InstagramService {
 
     async getReels(username, limit = 5) {
         try {
-            console.log(`🎬 Reels scraping for: ${username}`);
+            
             
             if (!this.page) {
                 await this.initialize();
@@ -171,7 +171,7 @@ class InstagramService {
                     await this.page.waitForTimeout(2000);
                 }
             } catch (e) {
-                console.log('Reels tab not found, using posts');
+                
             }
 
             // Scrape reels data
@@ -207,7 +207,7 @@ class InstagramService {
                 return reels;
             }, limit);
 
-            console.log(`✅ Scraped ${reelsData.length} reels for: ${username}`);
+            
             return reelsData;
 
         } catch (error) {

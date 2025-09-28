@@ -12,7 +12,7 @@ router.post('/profile/:username', async (req, res) => {
     username = username.replace(/\s+/g, '.').toLowerCase();
     const { forceUpdate } = req.query;
     
-    console.log(`🚀 Starting scrape for: ${username}`);
+    
     
     // Check if influencer already exists
     let influencer = await Influencer.findOne({ 
@@ -76,7 +76,7 @@ router.post('/profile/:username', async (req, res) => {
       await influencer.save();
     }
     
-    console.log(`✅ Profile scraped and saved: ${username}`);
+    
     
     res.json({
       success: true,
@@ -100,7 +100,7 @@ router.post('/posts/:username', async (req, res) => {
     username = username.replace(/\s+/g, '.').toLowerCase();
     const { limit = 12 } = req.query;
     
-    console.log(`🚀 Starting posts scrape for: ${username}`);
+    
     
     // Find influencer
     const influencer = await Influencer.findOne({ 
@@ -165,7 +165,7 @@ router.post('/posts/:username', async (req, res) => {
         await post.save();
         savedPosts.push(post);
         
-        console.log(`✅ Post saved: ${postData.postId}`);
+        
         
       } catch (error) {
         console.error(`❌ Error processing post ${postData.postId}:`, error.message);
@@ -184,7 +184,7 @@ router.post('/posts/:username', async (req, res) => {
       await influencer.save();
     }
     
-    console.log(`✅ Posts scraping completed: ${savedPosts.length} posts processed`);
+    
     
     res.json({
       success: true,
@@ -208,7 +208,7 @@ router.post('/reels/:username', async (req, res) => {
     username = username.replace(/\s+/g, '.').toLowerCase();
     const { limit = 5 } = req.query;
     
-    console.log(`🚀 Starting reels scrape for: ${username}`);
+    
     
     // Find influencer
     const influencer = await Influencer.findOne({ 
@@ -273,14 +273,14 @@ router.post('/reels/:username', async (req, res) => {
         await reel.save();
         savedReels.push(reel);
         
-        console.log(`✅ Reel saved: ${reelData.reelId}`);
+        
         
       } catch (error) {
         console.error(`❌ Error processing reel ${reelData.reelId}:`, error.message);
       }
     }
     
-    console.log(`✅ Reels scraping completed: ${savedReels.length} reels processed`);
+    
     
     res.json({
       success: true,
@@ -307,7 +307,7 @@ router.post('/complete/:username', async (req, res) => {
       reelsLimit = 5,
     } = req.query;
 
-    console.log(`🚀 Starting complete scrape for: ${username}`);
+    
     
     const results = {
       profile: null,
@@ -339,7 +339,7 @@ router.post('/complete/:username', async (req, res) => {
       }
       
       results.profile = influencer;
-      console.log(`✅ Profile scraped: ${username}`);
+      
     } catch (error) {
       results.errors.push(`Profile scraping failed: ${error.message}`);
       console.error(`❌ Profile scraping error for ${username}:`, error.message);
@@ -376,7 +376,7 @@ router.post('/complete/:username', async (req, res) => {
         }
         
         results.posts = savedPosts;
-        console.log(`✅ Posts scraped: ${savedPosts.length} posts`);
+        
       } catch (error) {
         results.errors.push(`Posts scraping failed: ${error.message}`);
         console.error(`❌ Posts scraping error for ${username}:`, error.message);
@@ -414,7 +414,7 @@ router.post('/complete/:username', async (req, res) => {
         }
         
         results.reels = savedReels;
-        console.log(`✅ Reels scraped: ${savedReels.length} reels`);
+        
       } catch (error) {
         results.errors.push(`Reels scraping failed: ${error.message}`);
         console.error(`❌ Reels scraping error for ${username}:`, error.message);
@@ -423,7 +423,7 @@ router.post('/complete/:username', async (req, res) => {
 
 
     
-    console.log(`✅ Complete scraping finished for: ${username}`);
+    
     
     const summary = {
       profileScraped: !!results.profile,
@@ -438,7 +438,7 @@ router.post('/complete/:username', async (req, res) => {
       'Complete scraping finished successfully';
 
     if (summary.errorsCount > 0) {
-      console.warn(`⚠️ Complete scraping finished with issues for: ${username}`);
+      
     }
 
     res.json({
