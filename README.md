@@ -1,206 +1,88 @@
-# PrimaSpot - Instagram Influencer Analytics Platform
+# PrimaSpot
 
-A comprehensive full-stack application for analyzing Instagram influencers using the `instagram-web-api`, with an interactive analytics dashboard.
+Instagram influencer scraping + lightweight analytics dashboard.
 
-## 🚀 Features
+## What this is
+PrimaSpot spins up a headless (actually currently non–headless) Puppeteer browser, visits a public Instagram profile, grabs high‑level profile stats plus a slice of recent posts and reels, stores them in MongoDB, and shows them in a clean React UI (Vite + Tailwind). No official Instagram API keys; just scripted browsing. Good for demos / internal experimentation – not for production scale or violating ToS.
 
-### Backend Features
-- **Instagram API Integration**: Uses the `instagram-web-api` library for data access.
-- **Comprehensive API**: REST endpoints for all data access and analytics.
-- **Database**: MongoDB with optimized schemas for influencers, posts, and reels.
-- **Performance**: Rate limiting, compression, and security middleware.
+## Current Capabilities
+Backend (Node + Express + Puppeteer + MongoDB)
+- Scrape profile (username, name guess, bio, avatar, followers, following, posts count)
+- Scrape limited recent posts (id, image, pseudo engagement placeholders)
+- Scrape limited recent reels (id, thumbnail, pseudo engagement placeholders)
+- REST endpoints under `/api/scraping/*`
+- Basic hardening: rate limiter, Helmet, compression, CORS
 
-### Frontend Features
-- **Modern React**: Functional components with hooks and state management.
-- **Interactive Dashboard**: Profile overview, analytics, posts grid, and reels section.
-- **Advanced Charts**: Engagement trends and performance comparisons.
-- **Responsive Design**: Mobile-first design with Tailwind CSS.
-- **Real-time Updates**: Live data fetching and smooth animations.
-- **Search & Discovery**: Influencer search with comprehensive filtering.
+Frontend (React + Vite)
+- Search a username and trigger a full scrape
+- Show profile header + counts
+- Grid of posts & reels (sampled)
+- Basic analytics placeholder components
+- Smooth animations (Framer Motion) & icons (Lucide)
 
-### Analytics & Insights
-- **Engagement Metrics**: Likes, comments, views, and engagement rates.
-- **Performance Trends**: Time-based analytics and growth tracking.
-- **Top Performing Content**: Identify best-performing posts and reels.
+Note: Some analytics numbers (likes, comments, views) are currently mock/randomized placeholders generated during scraping – adjust logic in `backend/services/InstagramService.js` if you want real metrics (would require deeper per‑post navigation & parsing).
 
-## 🛠 Tech Stack
+## Tech Stack
+- Backend: Node.js, Express, Puppeteer, Mongoose, MongoDB
+- Frontend: React, Vite, Tailwind CSS, Framer Motion, Recharts (placeholder), Axios
 
-### Backend
-- **Node.js** with Express.js framework
-- **MongoDB** with Mongoose ODM
-- **instagram-web-api** for Instagram data scraping
+## Quick Start
+Clone and install both sides.
 
-### Frontend
-- **React 19** with modern hooks and functional components
-- **Tailwind CSS** for responsive styling
-- **Recharts** for data visualization and analytics
-- **Framer Motion** for smooth animations and transitions
-- **Lucide React** for consistent iconography
-- **Axios** for API communication
-
-## 📦 Installation
-
-### Prerequisites
-- Node.js (v16 or higher)
-- MongoDB (local or cloud instance)
-- An Instagram account
-- Git
-
-### Backend Setup
+Backend
 ```bash
 cd backend
 npm install
-cp .env.example .env
-# Edit .env file with your Instagram credentials
+copy .env.example .env  # (Windows PowerShell) create your env file
+# Edit .env with Mongo connection + optional FRONTEND_URL
 npm run dev
 ```
 
-### Frontend Setup
+Frontend
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-## 🔧 Configuration
+Visit: http://localhost:5173
 
-### Environment Variables (`backend/.env`)
-Add your Instagram account credentials to the `backend/.env` file.
+Search for a public Instagram username (without @). Wait (can be 10–40s depending on network / IG throttling). Data appears when scraping finishes.
 
-```bash
-# Database
-MONGO_URI=mongodb://localhost:27017/primaspot
-
-# Server
+## Environment Variables (backend/.env)
+Minimal required:
+```
+MONGODB_URI=mongodb://localhost:27017/primaspot
 PORT=3001
 NODE_ENV=development
-
-# Frontend
 FRONTEND_URL=http://localhost:5173
-
-# Instagram Credentials
-INSTAGRAM_USERNAME=your_instagram_username
-INSTAGRAM_PASSWORD=your_instagram_password
 ```
 
-## 🚀 Usage
+You do NOT currently need Instagram credentials because this approach just visits public pages. If you add login later, extend the service and add credentials here.
 
-### Starting the Application
-1. **Start MongoDB** (if using local instance)
-2. **Start Backend**: `cd backend && npm run dev`
-3. **Start Frontend**: `cd frontend && npm run dev`
-4. **Access Application**: Open `http://localhost:5173`
+## Key Endpoints
+All prefixed with `/api/scraping`:
+- POST `/profile/:username`  – scrape only profile
+- POST `/posts/:username`    – scrape limited posts
+- POST `/reels/:username`    – scrape limited reels
+- POST `/complete/:username` – profile + posts + reels (what the UI uses)
+- GET  `/status`             – simple recent scrape summary
 
-### Basic Workflow
-1. **Search Influencer**: Enter Instagram username in search bar
-2. **View Profile**: Comprehensive profile overview with stats
-3. **Analyze Content**: AI-powered analysis of posts and reels
-4. **Track Performance**: Interactive charts and engagement metrics
-5. **Export Data**: Download analytics reports (future feature)
+## Where to Tweak
+- Scrape logic: `backend/services/InstagramService.js`
+- Routes / API: `backend/routes/scraping.js`
+- React data fetch: `frontend/src/services/ApiService.js`
+- UI rendering: `frontend/src/App.jsx` and components
 
-## 📊 API Endpoints
+## Limitations / Reality Check
+- Instagram markup changes will break selectors – expect maintenance.
+- Engagement numbers are placeholder randoms (clearly marked in code).
+- No login -> private / limited profiles won't return useful data.
+- No serious error retry / backoff yet.
+- Not production hardened (no clustering, no distributed queue, etc.).
 
-### Influencer Endpoints
-- `GET /api/influencers` - List all influencers
-- `GET /api/influencers/:username` - Get specific influencer
-- `GET /api/influencers/:username/posts` - Get influencer posts
-- `GET /api/influencers/:username/reels` - Get influencer reels
-- `GET /api/influencers/:username/analytics` - Get analytics data
+## Future Nice-to-Haves
+- Persist real per‑post metrics by opening each post modal
+- Real analytics (averages, growth curves, engagement rate)
 
-### Scraping Endpoints
-- `POST /api/scraping/profile/:username` - Scrape profile data
-- `POST /api/scraping/posts/:username` - Scrape posts with analysis
-- `POST /api/scraping/reels/:username` - Scrape reels with analysis
-- `POST /api/scraping/complete/:username` - Complete scraping pipeline
 
-## 🔍 Data Analysis Features
-
-### Image Analysis
-- **Object Detection**: Identify objects, people, and scenes
-- **Color Analysis**: Dominant colors and palette extraction
-- **Quality Assessment**: Lighting, composition, and visual appeal scores
-- **Tag Generation**: AI-generated descriptive tags
-- **Vibe Classification**: Mood and ambience detection
-
-### Video Analysis
-- **Activity Recognition**: Detect actions and movements
-- **Scene Classification**: Identify video content categories
-- **Quality Metrics**: Resolution, stability, and audio quality
-- **Temporal Analysis**: Time-based object and activity tracking
-
-### Performance Metrics
-- **Engagement Rate**: Likes and comments relative to followers
-- **Growth Tracking**: Follower and engagement trends
-- **Content Performance**: Top-performing posts identification
-- **Comparative Analysis**: Posts vs reels performance
-
-## 🔒 Security & Compliance
-
-### Data Privacy
-- No personal data storage beyond public Instagram information
-- Configurable data retention policies
-- GDPR-compliant data handling
-
-### Scraping Ethics
-- Respects Instagram's robots.txt and terms of service
-- Implements rate limiting to avoid overloading servers
-- Uses public data only, no private account access
-
-### Security Features
-- Request rate limiting
-- Input validation and sanitization
-- CORS configuration
-- Error handling and logging
-
-## 🚧 Future Enhancements
-
-### Advanced Features
-- **Real-time Monitoring**: Live engagement tracking
-- **Competitor Analysis**: Multi-influencer comparisons
-- **Predictive Analytics**: Engagement prediction models
-- **Export Functionality**: PDF/Excel report generation
-- **Collaboration Tools**: Team sharing and commenting
-
-### Technical Improvements
-- **Caching Layer**: Redis for improved performance
-- **Queue System**: Background job processing
-- **Microservices**: Scalable architecture migration
-- **GraphQL API**: Alternative to REST endpoints
-
-## 📈 Performance Optimization
-
-### Backend Optimization
-- Database indexing for fast queries
-- Image processing optimization
-- Connection pooling and caching
-- Background job processing
-
-### Frontend Optimization
-- Component lazy loading
-- Image optimization and caching
-- Bundle size optimization
-- Progressive loading states
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Open Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## ⚠️ Disclaimer
-
-This tool is for educational and research purposes. Users are responsible for complying with Instagram's Terms of Service and applicable laws. The developers are not responsible for any misuse of this software.
-
-## 📞 Support
-
-For support, email support@primaspot.com or open an issue on GitHub.
-
----
-
-**PrimaSpot Analytics** - Empowering data-driven influencer marketing decisions.
